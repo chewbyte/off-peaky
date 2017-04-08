@@ -11,6 +11,8 @@
 	<bean id="restRoutes" class="com.chewbyte.offpeaky.controller.RestRouteBuilder" />
 	
 	<bean id="stationCodeProcessor" class="com.chewbyte.offpeaky.processor.StationCodeProcessor" />
+	
+	<bean id="timesProcessor" class="com.chewbyte.offpeaky.processor.TimesProcessor" />
 
 	<camelContext id="providerCamelContext" xmlns="http://camel.apache.org/schema/spring"
 		trace="true">

@@ -23,8 +23,16 @@ public class RestRouteBuilder extends RouteBuilder {
 			.get()
 			.to("direct:getCode");
 		
+		rest("/times/{start}/{end}/{date}")
+			.produces(MediaType.APPLICATION_JSON)
+			.get()
+			.to("direct:getTimes");
+		
 		from("direct:getCode")
 			.process("stationCodeProcessor");
+		
+		from("direct:getTimes")
+			.process("timesProcessor");
 	}
 
 }
