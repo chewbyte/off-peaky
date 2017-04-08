@@ -9,7 +9,7 @@ import org.apache.camel.Processor;
 
 import com.chewbyte.offpeaky.csv.CsvSearch;
 import com.chewbyte.offpeaky.model.Station;
-import com.chewbyte.offpeaky.model.StationCodeResponse;
+import com.chewbyte.offpeaky.model.response.StationCodeResponse;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 

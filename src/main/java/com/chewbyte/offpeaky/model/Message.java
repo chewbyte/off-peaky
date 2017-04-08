@@ -2,7 +2,7 @@ package com.chewbyte.offpeaky.model;
 
 public class Message {
 
-	String text;
+	private String text;
 
 	public String getText() {
 		return text;

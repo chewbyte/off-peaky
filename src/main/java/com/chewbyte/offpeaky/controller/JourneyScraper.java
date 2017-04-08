@@ -15,24 +15,24 @@ import com.chewbyte.offpeaky.model.Journey;
 import com.google.gson.Gson;
 
 public class JourneyScraper {
-	
+
 	private Map<String,Journey> journeyList;
 	private String baseUrl;
-	private String previousSelection;
-	private String timeSelection;
+	private int previousSelection;
+	private int timeSelection;
 	private Gson gson;
 	
 	public JourneyScraper(String startStation, String endStation, String dateTravel) {
 		journeyList = new TreeMap<String,Journey>();
 		baseUrl =  String.format("http://ojp.nationalrail.co.uk/service/timesandfares/%s/%s/%s/_TIME_/dep", startStation, endStation, dateTravel);
-		previousSelection = "-1";
-		timeSelection = "0000";
+		previousSelection = -1;
+		timeSelection = 0;
 		gson = new Gson();
 	}
 	
 	public List<Journey> scrape() throws IOException {
 		
-		while(Integer.parseInt(timeSelection) > Integer.parseInt(previousSelection)) {
+		while(timeSelection > previousSelection) {
 			previousSelection = timeSelection;
 			scrapeSet();
 		}
@@ -41,16 +41,19 @@ public class JourneyScraper {
 
 	public void scrapeSet() throws IOException{
 		
-		String newBaseUrl = baseUrl.replace("_TIME_", timeSelection);
+		String newBaseUrl = baseUrl.replace("_TIME_", String.format("%04d", timeSelection));
 
 		Document doc = Jsoup.connect(newBaseUrl).get();
 		Elements journeyElementList = doc.select("[id^=jsonJourney]");
 
 		for(Element journeyElement:journeyElementList) {
 			Journey journey = gson.fromJson(journeyElement.html(), Journey.class);
-			String departureTime = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
-			timeSelection = String.format("%04d", Integer.parseInt(departureTime) + 6);
-			journeyList.put(departureTime, journey);
+			String departureTimeString = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
+			int departureTime = Integer.parseInt(departureTimeString);
+			if(!journeyList.containsKey(departureTimeString) && departureTime >= timeSelection) {
+				journeyList.put(departureTimeString, journey);
+				timeSelection = departureTime;
+			}
 		}
 	}
 }

@@ -1,6 +1,8 @@
-package com.chewbyte.offpeaky.model;
+package com.chewbyte.offpeaky.model.response;
 
 import java.util.List;
+
+import com.chewbyte.offpeaky.model.Station;
 
 public class StationCodeResponse {
 
