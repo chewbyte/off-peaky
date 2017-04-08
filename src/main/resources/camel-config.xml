@@ -8,7 +8,7 @@
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<!-- a rest service which uses binding to/from pojos -->
-	<bean id="restRoutes" class="com.chewbyte.offpeaky.RestRouteBuilder" />
+	<bean id="restRoutes" class="com.chewbyte.offpeaky.controller.RestRouteBuilder" />
 	
 	<bean id="stationCodeProcessor" class="com.chewbyte.offpeaky.processor.StationCodeProcessor" />
 

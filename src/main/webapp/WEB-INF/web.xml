@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-  <display-name>My Camel Rest Application</display-name>
+  <display-name>Off Peaky API</display-name>
 
   <!-- location of Camel Spring xml files -->
   <context-param>

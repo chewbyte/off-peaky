@@ -1,15 +1,15 @@
 package com.chewbyte.offpeaky.processor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
 import com.chewbyte.offpeaky.csv.CsvSearch;
-import com.google.gson.Gson;
+import com.chewbyte.offpeaky.model.Station;
+import com.chewbyte.offpeaky.model.StationCodeResponse;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
@@ -39,8 +39,16 @@ public class StationCodeProcessor implements Processor{
 		//Get collected rows
 		List<String[]> results = search.getRows();
 		
-		Gson gson = new Gson();
-		exchange.getOut().setBody(gson.toJson(results));
-		exchange.getOut().setHeader(Exchange.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+		StationCodeResponse response = new StationCodeResponse();
+		List<Station> stationList = new ArrayList<Station>();
+		for(String[] entry: results) {
+			Station station = new Station();
+			station.setStationName(entry[0]);
+			station.setStationCode(entry[1]);
+			stationList.add(station);
+		}
+		response.setStationList(stationList);
+		
+		exchange.getOut().setBody(response);
 	}
 }

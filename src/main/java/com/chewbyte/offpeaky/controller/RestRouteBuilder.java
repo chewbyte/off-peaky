@@ -1,5 +1,5 @@
 
-package com.chewbyte.offpeaky;
+package com.chewbyte.offpeaky.controller;
 
 import javax.ws.rs.core.MediaType;
 
@@ -25,7 +25,6 @@ public class RestRouteBuilder extends RouteBuilder {
 		
 		from("direct:getCode")
 			.process("stationCodeProcessor");
-		
 	}
 
 }
