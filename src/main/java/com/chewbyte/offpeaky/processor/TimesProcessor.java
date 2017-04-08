@@ -17,8 +17,8 @@ public class TimesProcessor implements Processor {
 		final String dateTravel = exchange.getIn().getHeader("date", String.class);
 		
 		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, dateTravel);
-		List<Journey> journeyList = journeyScraper.scrape();		
 		
+		List<Journey> journeyList = journeyScraper.scrape();		
 		exchange.getOut().setBody(journeyList);
 	}
 }

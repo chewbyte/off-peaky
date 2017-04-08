@@ -13,6 +13,8 @@
 	<bean id="stationCodeProcessor" class="com.chewbyte.offpeaky.processor.StationCodeProcessor" />
 	
 	<bean id="timesProcessor" class="com.chewbyte.offpeaky.processor.TimesProcessor" />
+	
+	<bean id="testProcessor" class="com.chewbyte.offpeaky.processor.TestProcessor" />
 
 	<camelContext id="providerCamelContext" xmlns="http://camel.apache.org/schema/spring"
 		trace="true">

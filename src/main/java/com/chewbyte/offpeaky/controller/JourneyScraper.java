@@ -48,8 +48,9 @@ public class JourneyScraper {
 
 		for(Element journeyElement:journeyElementList) {
 			Journey journey = gson.fromJson(journeyElement.html(), Journey.class);
-			timeSelection = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
-			journeyList.put(timeSelection, journey);
+			String departureTime = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
+			timeSelection = String.format("%04d", Integer.parseInt(departureTime) + 6);
+			journeyList.put(departureTime, journey);
 		}
 	}
 }

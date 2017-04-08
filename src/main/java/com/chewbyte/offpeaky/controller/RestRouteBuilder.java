@@ -28,11 +28,19 @@ public class RestRouteBuilder extends RouteBuilder {
 			.get()
 			.to("direct:getTimes");
 		
+		rest("/test")
+			.produces(MediaType.APPLICATION_JSON)
+			.get()
+			.to("direct:test");
+		
 		from("direct:getCode")
 			.process("stationCodeProcessor");
 		
 		from("direct:getTimes")
 			.process("timesProcessor");
+		
+		from("direct:test")
+			.process("testProcessor");
 	}
 
 }
