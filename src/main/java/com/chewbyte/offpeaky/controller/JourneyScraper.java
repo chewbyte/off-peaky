@@ -43,7 +43,7 @@ public class JourneyScraper {
 		
 		String newBaseUrl = baseUrl.replace("_TIME_", String.format("%04d", timeSelection));
 
-		Document doc = Jsoup.connect(newBaseUrl).get();
+		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get();
 		Elements journeyElementList = doc.select("[id^=jsonJourney]");
 
 		for(Element journeyElement:journeyElementList) {
