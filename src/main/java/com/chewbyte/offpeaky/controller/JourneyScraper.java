@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
-import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,7 +40,7 @@ public class JourneyScraper {
 
 		long timeStart = System.currentTimeMillis();
 
-		ExecutorService executorService = Executors.newFixedThreadPool(25);
+		ExecutorService executorService = Executors.newFixedThreadPool(20);
 		List<Future<Map<String, Journey>>> handles = new ArrayList<Future<Map<String, Journey>>>();
 		Future<Map<String, Journey>> handle;
 		int i;
@@ -50,7 +49,7 @@ public class JourneyScraper {
 
 				public Map<String, Journey> call() throws Exception {
 					logger.info("Thread started: " + Thread.currentThread().getId());
-					String timeString = LocalTime.MIN.plus(Duration.ofMinutes(20 * threadNumber++)).toString().replace(":", "");
+					String timeString = LocalTime.MIN.plus(Duration.ofMinutes(20 * threadNumber++)).toString();
 					Map<String, Journey> journeyList = scrapeSet(timeString);
 					logger.info("Thread ended: " + Thread.currentThread().getId());
 					return journeyList;
@@ -79,22 +78,25 @@ public class JourneyScraper {
 
 		Map<String, Journey> journeyList = new TreeMap<String, Journey>();
 
-		String newBaseUrl = baseUrl.replace("_TIME_", time);
+		String newBaseUrl = baseUrl.replace("_TIME_", time.replace(":", ""));
 
 		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get();
+		Elements table = doc.select("#oft");
 		
 		if(doc.select("#dialog1Title").size() > 0) return null;
+		if(table.select(".next-day").size() > 0){
+			table.select(".next-day ~ tr").remove();
+			table.select(".next-day").remove();
+		}
 		
-		doc.select(".next-day ~ tr").remove();
-		doc.select(".next-day").remove();
-		Elements journeyElementList = doc.select("[id^=jsonJourney]");
+		Elements journeyElementList = table.select("[id^=json]");
 
 		int i;
 		Element journeyElement;
 		for (i = 0; i < journeyElementList.size(); i++) {
 			journeyElement = journeyElementList.get(i);
 			Journey journey = gson.fromJson(journeyElement.html(), Journey.class);
-			String departureTimeString = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
+			String departureTimeString = journey.getJsonJourneyBreakdown().getDepartureTime();
 			journeyList.put(departureTimeString, journey);
 		}
 
