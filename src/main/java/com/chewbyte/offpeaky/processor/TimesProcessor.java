@@ -1,24 +1,35 @@
 package com.chewbyte.offpeaky.processor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.log4j.Logger;
 
 import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
 import com.chewbyte.offpeaky.model.Journey;
 
 public class TimesProcessor implements Processor {
-
+	
 	public void process(Exchange exchange) throws Exception {
-
-		final String startStation = exchange.getIn().getHeader("start", String.class);
-		final String endStation = exchange.getIn().getHeader("end", String.class);
-		final String dateTravel = exchange.getIn().getHeader("date", String.class);
-		final String ticketType = exchange.getIn().getHeader("ticketType", String.class);
 		
-		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, dateTravel);
+		String toStation = (String) exchange.getProperty("toStation");
+		String fromStation = (String) exchange.getProperty("fromStation");
+		String date = (String) exchange.getProperty("date");
+		String ticketType = (String) exchange.getProperty("ticketType");
+		
+		Map<String, Object> headers = new HashMap<String, Object>();
+		headers = exchange.getIn().getHeaders();
+		
+		toStation = headers.get("start") != null ? (String) headers.get("start") : toStation;
+		fromStation = headers.get("end") != null ? (String) headers.get("end") : fromStation;
+		date = headers.get("date") != null ? (String) headers.get("date") : date;
+		ticketType = headers.get("ticketType") != null ? (String) headers.get("ticketType") : ticketType;
+		
+		JourneyScraper journeyScraper = new JourneyScraper(toStation, fromStation, date);
 		
 		List<Journey> journeyList = journeyScraper.scrape();
 		

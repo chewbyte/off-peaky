@@ -100,7 +100,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<url>http://localhost:8080/manager/text</url>
+					<url>http://35.189.229.179:8080/manager/text</url>
 					<server>tomcat7</server>
 					<path>/offpeaky</path>
 				</configuration>

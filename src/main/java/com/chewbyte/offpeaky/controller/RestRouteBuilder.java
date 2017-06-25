@@ -4,7 +4,7 @@ package com.chewbyte.offpeaky.controller;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.rest.RestBindingMode;
+import org.apache.camel.model.rest.RestBindingMode;	
 
 /**
  * Define REST services using the Camel REST DSL
@@ -27,6 +27,19 @@ public class RestRouteBuilder extends RouteBuilder {
 			.produces(MediaType.APPLICATION_JSON)
 			.get()
 			.to("direct:getTimes");
+		
+		rest("/test")
+			.consumes(MediaType.APPLICATION_JSON)
+			.produces(MediaType.APPLICATION_JSON)
+			.post()
+			.to("direct:test");
+		
+		from("direct:test")
+			.onCompletion()
+				.process("timesProcessor")
+				.log("lol'd")
+			.end()
+			.process("testProcessor");
 		
 		from("direct:getCode")
 			.process("stationCodeProcessor");
