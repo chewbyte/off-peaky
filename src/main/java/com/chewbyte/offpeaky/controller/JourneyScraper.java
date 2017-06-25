@@ -13,7 +13,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chewbyte.offpeaky.model.Journey;
-import com.chewbyte.offpeaky.processor.TimesProcessor;
 import com.google.gson.Gson;
 
 public class JourneyScraper {
@@ -44,7 +43,8 @@ public class JourneyScraper {
 			scrapeSet();
 		}
 		
-		logger.info("Request took " + (System.currentTimeMillis() - timeStart));
+		logger.info("Scrape time: " + (System.currentTimeMillis() - timeStart));
+		logger.info("Found journeys: " + journeyList.size());
 		
 		return new ArrayList<Journey>(journeyList.values());
 	}
@@ -53,7 +53,7 @@ public class JourneyScraper {
 
 		String newBaseUrl = baseUrl.replace("_TIME_", String.format("%04d", timeSelection));
 
-		Elements doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get().select("#oft");
+		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get();
 		Elements journeyElementList = doc.select("[id^=jsonJourney]");
 
 		int i;
@@ -68,7 +68,7 @@ public class JourneyScraper {
 				timeSelection = departureTime;
 			}
 		}
-
+		
 		logger.info("Completed scrape for " + timeSelection);
 	}
 }

@@ -19,11 +19,11 @@ public class JourneyMapper {
 			journeyTime.setDepartureTime(journey.getJsonJourneyBreakdown().getDepartureTime());
 			String journeyTicketType = journey.getSingleJsonFareBreakdowns().get(0).getTicketType();
 
-			if (journeyTicketType.equals("Anytime Single")) {
+			if (journeyTicketType.startsWith("Anytime")) {
 				journeyTime.setTicketType(TicketType.ANYTIME);
-			} else if (journeyTicketType.equals("Off-Peak Single")) {
+			} else if (journeyTicketType.startsWith("Off-Peak")) {
 				journeyTime.setTicketType(TicketType.OFF_PEAK);
-			} else if (journeyTicketType.equals("Super Off-Peak Single")) {
+			} else if (journeyTicketType.startsWith("Super Off-Peak")) {
 				journeyTime.setTicketType(TicketType.SUPER_OFF_PEAK);
 			} else
 				System.out.println("We found a new thing: " + journeyTicketType);
