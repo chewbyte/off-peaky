@@ -1,12 +1,19 @@
 package com.chewbyte.offpeaky.controller;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,41 +26,67 @@ public class JourneyScraper {
 
 	Logger logger = Logger.getLogger(JourneyScraper.class);
 
-	private Map<String, Journey> journeyList;
+	private Map<String, Journey> finalJourneyList = new TreeMap<String, Journey>();
 	private String baseUrl;
-	private int previousSelection;
-	private int timeSelection;
 	private Gson gson;
+	private int threadNumber;
 
 	public JourneyScraper(String startStation, String endStation, String dateTravel) {
-		journeyList = new TreeMap<String, Journey>();
 		baseUrl = String.format("http://ojp.nationalrail.co.uk/service/timesandfares/%s/%s/%s/_TIME_/dep", startStation,
 				endStation, dateTravel);
-		previousSelection = -1;
-		timeSelection = 0;
 		gson = new Gson();
 	}
 
 	public List<Journey> scrape() throws IOException {
-		
+
 		long timeStart = System.currentTimeMillis();
 
-		while (timeSelection > previousSelection) {
-			previousSelection = timeSelection;
-			scrapeSet();
+		ExecutorService executorService = Executors.newFixedThreadPool(25);
+		List<Future<Map<String, Journey>>> handles = new ArrayList<Future<Map<String, Journey>>>();
+		Future<Map<String, Journey>> handle;
+		int i;
+		for (i = 0; i < 72; i++) {
+			handle = executorService.submit(new Callable<Map<String, Journey>>() {
+
+				public Map<String, Journey> call() throws Exception {
+					logger.info("Thread started: " + Thread.currentThread().getId());
+					String timeString = LocalTime.MIN.plus(Duration.ofMinutes(20 * threadNumber++)).toString().replace(":", "");
+					Map<String, Journey> journeyList = scrapeSet(timeString);
+					logger.info("Thread ended: " + Thread.currentThread().getId());
+					return journeyList;
+				}
+			});
+			handles.add(handle);
 		}
-		
+
+		for (Future<Map<String, Journey>> h : handles) {
+			try {
+				finalJourneyList.putAll(h.get());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		executorService.shutdownNow();
+
 		logger.info("Scrape time: " + (System.currentTimeMillis() - timeStart));
-		logger.info("Found journeys: " + journeyList.size());
-		
-		return new ArrayList<Journey>(journeyList.values());
+		logger.info("Found journeys: " + finalJourneyList.size());
+
+		return new ArrayList<Journey>(finalJourneyList.values());
 	}
 
-	public void scrapeSet() throws IOException {
+	public Map<String, Journey> scrapeSet(String time) throws IOException {
 
-		String newBaseUrl = baseUrl.replace("_TIME_", String.format("%04d", timeSelection));
+		Map<String, Journey> journeyList = new TreeMap<String, Journey>();
+
+		String newBaseUrl = baseUrl.replace("_TIME_", time);
 
 		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get();
+		
+		if(doc.select("#dialog1Title").size() > 0) return null;
+		
+		doc.select(".next-day ~ tr").remove();
+		doc.select(".next-day").remove();
 		Elements journeyElementList = doc.select("[id^=jsonJourney]");
 
 		int i;
@@ -62,13 +95,11 @@ public class JourneyScraper {
 			journeyElement = journeyElementList.get(i);
 			Journey journey = gson.fromJson(journeyElement.html(), Journey.class);
 			String departureTimeString = journey.getJsonJourneyBreakdown().getDepartureTime().replace(":", "");
-			int departureTime = Integer.parseInt(departureTimeString);
-			if (!journeyList.containsKey(departureTimeString) && departureTime >= timeSelection) {
-				journeyList.put(departureTimeString, journey);
-				timeSelection = departureTime;
-			}
+			journeyList.put(departureTimeString, journey);
 		}
-		
-		logger.info("Completed scrape for " + timeSelection);
+
+		logger.info(String.format("Completed scrape for %s", time));
+
+		return journeyList;
 	}
 }
