@@ -16,14 +16,14 @@
       jdbc:mysql://localhost/offpeaky
    </property>
    <property name="hibernate.connection.username">
-      root
+      offpeaky
    </property>
    <property name="hibernate.connection.password">
-      root123
+      IProgramMyHomeComputer1234
    </property>
 
    <!-- List of XML mapping files -->
-   <mapping resource="Journey.hbm.xml"/>
+   <mapping resource="DBJourney.hbm.xml"/>
 
 </session-factory>
 </hibernate-configuration>

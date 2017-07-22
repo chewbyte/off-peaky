@@ -24,6 +24,11 @@ public class TimesProcessor implements Processor {
 		String date = (String) exchange.getProperty("date");
 		String ticketType = (String) exchange.getProperty("ticketType");
 		
+		if(toStation.isEmpty()) return;
+		if(fromStation.isEmpty()) return;
+		if(date.isEmpty()) return;
+		if(ticketType.isEmpty()) return;
+		
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers = exchange.getIn().getHeaders();
 		
