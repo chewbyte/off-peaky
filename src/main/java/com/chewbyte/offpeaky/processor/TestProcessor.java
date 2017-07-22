@@ -9,9 +9,9 @@ import org.apache.camel.Processor;
 
 import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
+import com.chewbyte.offpeaky.mapper.TicketTypeMapper;
 import com.chewbyte.offpeaky.model.Journey;
 import com.chewbyte.offpeaky.model.JourneyTime;
-import com.chewbyte.offpeaky.repository.GsonFactory;
 
 public class TestProcessor implements Processor {
 
@@ -31,6 +31,6 @@ public class TestProcessor implements Processor {
 
 		List<JourneyTime> journeyTimeList = JourneyMapper.map(journeyList);
 
-		exchange.getOut().setBody(GsonFactory.json(journeyTimeList));
+		exchange.getOut().setBody(TicketTypeMapper.map(journeyTimeList, ticketType));
 	}
 }

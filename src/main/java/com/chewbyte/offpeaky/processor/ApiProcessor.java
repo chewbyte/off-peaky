@@ -1,6 +1,8 @@
 package com.chewbyte.offpeaky.processor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -11,11 +13,15 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import com.chewbyte.offpeaky.controller.Constants;
+import com.chewbyte.offpeaky.mapper.TicketTypeMapper;
+import com.chewbyte.offpeaky.model.JourneyTime;
 import com.chewbyte.offpeaky.model.request.ApiRequest;
 import com.chewbyte.offpeaky.model.response.ApiResponse;
 import com.chewbyte.offpeaky.repository.GsonFactory;
 import com.chewbyte.offpeaky.repository.HibernateFactory;
 import com.chewbyte.offpeaky.repository.model.DBJourney;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class ApiProcessor implements Processor {
 	
@@ -45,8 +51,10 @@ public class ApiProcessor implements Processor {
 		apiResponse.setSource("chewbyte.com");
 		
 		if(journey != null) {
-			apiResponse.setSpeech(journey.getJson());
-			apiResponse.setDisplayTest(journey.getJson());
+			Type listType = new TypeToken<ArrayList<JourneyTime>>(){}.getType();
+			List<JourneyTime> journeyTimeList = new Gson().fromJson(journey.getJson(), listType);
+			apiResponse.setSpeech(TicketTypeMapper.map(journeyTimeList, ticketType));
+			apiResponse.setDisplayTest(TicketTypeMapper.map(journeyTimeList, ticketType));
 		} else {
 			apiResponse.setSpeech(Constants.MESSAGE_WAIT);
 			apiResponse.setDisplayTest(Constants.MESSAGE_WAIT);
