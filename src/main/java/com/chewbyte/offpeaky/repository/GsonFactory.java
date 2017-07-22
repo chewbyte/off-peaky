@@ -1,6 +1,7 @@
 package com.chewbyte.offpeaky.repository;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class GsonFactory {
 
@@ -9,7 +10,7 @@ public class GsonFactory {
 	public static String json(Object element) {
 		
 		if(gson == null) {
-			gson = new Gson();
+			gson = new GsonBuilder().setPrettyPrinting().create();
 		}
 		return gson.toJson(element);
 	}
