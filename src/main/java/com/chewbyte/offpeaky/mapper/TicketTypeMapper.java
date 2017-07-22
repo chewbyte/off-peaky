@@ -14,11 +14,11 @@ public class TicketTypeMapper {
 		TicketType type = null;
 		if (ticketType.equals("OP")) {
 			type = TicketType.OFF_PEAK;
-			sb.append("Off-Peak times:");
+			sb.append("You can travel on any of the following Off-Peak trains:");
 		}
 		else if (ticketType.equals("SOP")) {
 			type = TicketType.SUPER_OFF_PEAK;
-			sb.append("Super Off-Peak times:");
+			sb.append("You can travel on any of the following Super Off-Peak trains:");
 		}
 		if (type == null) return "Invalid ticket type code.";
 
@@ -56,11 +56,15 @@ public class TicketTypeMapper {
 				}
 
 				if (leftBound && rightBound) {
-					sb.append(" ").append(jt.getDepartureTime()).append(";");
+					sb.append("\n").append(jt.getDepartureTime()).append(",");
 				} else if (leftBound) {
-					sb.append(" ").append(jt.getDepartureTime()).append(" => ");
+					sb.append("\nbetween ").append(jt.getDepartureTime()).append(" and ");
 				} else if (rightBound) {
-					sb.append(jt.getDepartureTime()).append(";");
+					if(currentIndex == journeyTimeList.size() - 1) {
+						sb.append(jt.getDepartureTime()).append(".");
+					} else {
+						sb.append(jt.getDepartureTime()).append(",");
+					}
 				}
 			}
 		}
