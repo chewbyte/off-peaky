@@ -14,11 +14,11 @@ public class TicketTypeMapper {
 		TicketType type = null;
 		if (ticketType.equals("OP")) {
 			type = TicketType.OFF_PEAK;
-			sb.append("Off-Peak times: ");
+			sb.append("Off-Peak times:");
 		}
 		else if (ticketType.equals("SOP")) {
 			type = TicketType.SUPER_OFF_PEAK;
-			sb.append("Super Off-Peak times: ");
+			sb.append("Super Off-Peak times:");
 		}
 		if (type == null) return "Invalid ticket type code.";
 
@@ -56,11 +56,11 @@ public class TicketTypeMapper {
 				}
 
 				if (leftBound && rightBound) {
-					sb.append(jt.getDepartureTime()).append("; ");
+					sb.append(" ").append(jt.getDepartureTime()).append(";");
 				} else if (leftBound) {
-					sb.append(jt.getDepartureTime()).append(" => ");
+					sb.append(" ").append(jt.getDepartureTime()).append(" => ");
 				} else if (rightBound) {
-					sb.append(jt.getDepartureTime()).append("; ");
+					sb.append(jt.getDepartureTime()).append(";");
 				}
 			}
 		}
