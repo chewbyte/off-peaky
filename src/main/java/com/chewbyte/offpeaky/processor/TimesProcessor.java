@@ -27,10 +27,10 @@ public class TimesProcessor implements Processor {
 		String date = (String) exchange.getProperty("date");
 		String ticketType = (String) exchange.getProperty("ticketType");
 		
-		if(startStation.isEmpty()) return;
-		if(endStation.isEmpty()) return;
-		if(date.isEmpty()) return;
-		if(ticketType.isEmpty()) return;
+		if(startStation == null) return;
+		if(endStation == null) return;
+		if(date == null) return;
+		if(ticketType == null) return;
 		
 		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, date);
 		
