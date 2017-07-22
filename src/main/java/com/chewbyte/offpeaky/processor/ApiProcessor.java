@@ -15,6 +15,7 @@ import org.joda.time.format.DateTimeFormatter;
 import com.chewbyte.offpeaky.model.Result;
 import com.chewbyte.offpeaky.model.request.ApiRequest;
 import com.chewbyte.offpeaky.model.response.ApiResponse;
+import com.chewbyte.offpeaky.repository.GsonFactory;
 import com.google.gson.Gson;
 
 public class ApiProcessor implements Processor {
@@ -25,9 +26,8 @@ public class ApiProcessor implements Processor {
 		
 		final String MESSAGE_WAIT = "Please wait while I check that for you.";
 		
-		Gson gson = new Gson();
 		String string = exchange.getIn().getBody(String.class);
-		ApiRequest request = gson.fromJson(string, ApiRequest.class);
+		ApiRequest request = (ApiRequest) GsonFactory.object(string, ApiRequest.class);
 		
 		String toStation = request.getResult().getParameters().getToStation();
 		String fromStation = request.getResult().getParameters().getFromStation();
@@ -53,6 +53,6 @@ public class ApiProcessor implements Processor {
 		exchange.setProperty("date", dateFormatted);
 		exchange.setProperty("ticketType", ticketType);
 		
-		exchange.getOut().setBody(gson.toJson(apiResponse));
+		exchange.getOut().setBody(GsonFactory.json(apiResponse));
 	}
 }

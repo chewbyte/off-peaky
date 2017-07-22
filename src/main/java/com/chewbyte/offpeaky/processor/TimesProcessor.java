@@ -12,6 +12,8 @@ import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
 import com.chewbyte.offpeaky.model.Journey;
 import com.chewbyte.offpeaky.model.JourneyTime;
+import com.chewbyte.offpeaky.repository.GsonFactory;
+import com.google.gson.Gson;
 
 public class TimesProcessor implements Processor {
 	
@@ -36,6 +38,6 @@ public class TimesProcessor implements Processor {
 		
 		List<JourneyTime> journeyTimeList = JourneyMapper.map(journeyList);
 		
-		exchange.getOut().setBody(journeyList);
+		exchange.getOut().setBody(GsonFactory.json(journeyTimeList));
 	}
 }

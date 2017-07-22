@@ -19,6 +19,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chewbyte.offpeaky.model.Journey;
+import com.chewbyte.offpeaky.repository.GsonFactory;
 import com.google.gson.Gson;
 
 public class JourneyScraper {
@@ -27,13 +28,11 @@ public class JourneyScraper {
 
 	private Map<String, Journey> finalJourneyList = new TreeMap<String, Journey>();
 	private String baseUrl;
-	private Gson gson;
 	private int threadNumber;
 
 	public JourneyScraper(String startStation, String endStation, String dateTravel) {
 		baseUrl = String.format("http://ojp.nationalrail.co.uk/service/timesandfares/%s/%s/%s/_TIME_/dep", startStation,
 				endStation, dateTravel);
-		gson = new Gson();
 	}
 
 	public List<Journey> scrape() throws IOException {
@@ -95,7 +94,7 @@ public class JourneyScraper {
 		Element journeyElement;
 		for (i = 0; i < journeyElementList.size(); i++) {
 			journeyElement = journeyElementList.get(i);
-			Journey journey = gson.fromJson(journeyElement.html(), Journey.class);
+			Journey journey = (Journey) GsonFactory.object(journeyElement.html(), Journey.class);
 			String departureTimeString = journey.getJsonJourneyBreakdown().getDepartureTime();
 			journeyList.put(departureTimeString, journey);
 		}
