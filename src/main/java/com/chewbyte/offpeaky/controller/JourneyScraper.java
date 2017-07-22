@@ -78,7 +78,7 @@ public class JourneyScraper {
 
 		String newBaseUrl = baseUrl.replace("_TIME_", time.replace(":", ""));
 
-		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", "F314BF030F0C599248900C5731E62EFA.app208").get();
+		Document doc = Jsoup.connect(newBaseUrl).cookie("JSESSIONID", Constants.JSESSIONID).get();
 		Elements table = doc.select("#oft");
 		
 		if(doc.select("#dialog1Title").size() > 0) return null;
