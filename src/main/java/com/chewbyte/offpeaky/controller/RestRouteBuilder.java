@@ -34,14 +34,13 @@ public class RestRouteBuilder extends RouteBuilder {
 		
 		rest("/chatapi")
 			.post()
-			.to("direct:test");
+			.to("direct:chatapi");
 		
-		from("direct:test")
+		from("direct:chatapi")
 			.onCompletion()
 				.process("timesProcessor")
-				.log("lol'd")
 			.end()
-			.process("testProcessor");
+			.process("apiProcessor");
 		
 		from("direct:getCode")
 			.process("stationCodeProcessor");

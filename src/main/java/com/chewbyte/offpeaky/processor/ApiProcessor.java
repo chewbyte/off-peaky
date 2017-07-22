@@ -17,26 +17,17 @@ import com.chewbyte.offpeaky.model.request.ApiRequest;
 import com.chewbyte.offpeaky.model.response.ApiResponse;
 import com.google.gson.Gson;
 
-public class TestProcessor implements Processor {
+public class ApiProcessor implements Processor {
 	
-	Logger log = Logger.getLogger(TestProcessor.class);
+	Logger log = Logger.getLogger(ApiProcessor.class);
 
 	public void process(Exchange exchange) throws Exception {
 		
 		final String MESSAGE_WAIT = "Please wait while I check that for you.";
- 
-//		LinkedHashMap<String, Object> apiRequest = (LinkedHashMap<String, Object>) exchange.getIn().getBody();
-//		LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) apiRequest.get("result");
-//		LinkedHashMap<String, Object> parameters = (LinkedHashMap<String, Object>) result.get("parameters");
 		
 		Gson gson = new Gson();
 		String string = exchange.getIn().getBody(String.class);
 		ApiRequest request = gson.fromJson(string, ApiRequest.class);
-		
-		System.out.println("%\n%");
-		System.out.println(string);
-		System.out.println(request);
-		System.out.println("%\n%");
 		
 		String toStation = request.getResult().getParameters().getToStation();
 		String fromStation = request.getResult().getParameters().getFromStation();
