@@ -14,7 +14,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.chewbyte.offpeaky.controller.Constants;
 import com.chewbyte.offpeaky.mapper.TicketTypeMapper;
+import com.chewbyte.offpeaky.model.Context;
 import com.chewbyte.offpeaky.model.JourneyTime;
+import com.chewbyte.offpeaky.model.Parameters;
 import com.chewbyte.offpeaky.model.request.ApiRequest;
 import com.chewbyte.offpeaky.model.response.ApiResponse;
 import com.chewbyte.offpeaky.repository.GsonFactory;
@@ -36,25 +38,46 @@ public class ApiProcessor implements Processor {
 		String toStation = request.getResult().getParameters().getToStation();
 		String ticketType = request.getResult().getParameters().getTicketType();
 		
+		System.out.println(fromStation);
+		System.out.println(toStation);
+		System.out.println(ticketType);
+		
 		DateTime date = new DateTime(request.getResult().getParameters().getDate());
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("ddMMYY");
 		String dateFormatted = fmt.print(date);
+		
+		System.out.println(dateFormatted);
 		
 		String code = fromStation + toStation + dateFormatted;
 		Session session = HibernateFactory.get();
 		DBJourney journey = (DBJourney) session.get(DBJourney.class, code);
 		session.close();
 		
+		Parameters parameters = new Parameters();
+		parameters.setFromStation(fromStation);
+		parameters.setToStation(toStation);
+		parameters.setTicketType(ticketType);
+		parameters.setDate(dateFormatted);
+		
+		Context context = new Context();
+		context.setLifespan("2");
+		context.setName("send_offpeaky_inputs-followup");
+		context.setParameters(parameters);
+		
+		List<Context> contextOut = new ArrayList<Context>();
+		contextOut.add(context);
+		
 		ApiResponse apiResponse = new ApiResponse();
 		apiResponse.setData("");
-		apiResponse.setContextOut(new ArrayList<String>());
+		apiResponse.setContextOut(contextOut);
 		apiResponse.setSource("chewbyte.com");
 		
 		if(journey != null) {
 			Type listType = new TypeToken<ArrayList<JourneyTime>>(){}.getType();
 			List<JourneyTime> journeyTimeList = new Gson().fromJson(journey.getJson(), listType);
-			apiResponse.setSpeech(TicketTypeMapper.map(journeyTimeList, ticketType));
-			apiResponse.setDisplayTest(TicketTypeMapper.map(journeyTimeList, ticketType));
+			String returnString = TicketTypeMapper.map(journeyTimeList, ticketType, fromStation);
+			apiResponse.setSpeech(returnString);
+			apiResponse.setDisplayTest(returnString);
 		} else {
 			apiResponse.setSpeech(Constants.MESSAGE_WAIT);
 			apiResponse.setDisplayTest(Constants.MESSAGE_WAIT);
