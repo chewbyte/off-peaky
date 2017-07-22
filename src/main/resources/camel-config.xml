@@ -14,7 +14,7 @@
 
 	<bean id="timesProcessor" class="com.chewbyte.offpeaky.processor.TimesProcessor" />
 
-	<bean id="testProcessor" class="com.chewbyte.offpeaky.processor.TestProcessor" />
+	<bean id="apiProcessor" class="com.chewbyte.offpeaky.processor.ApiProcessor" />
 
 	<camelContext id="providerCamelContext" xmlns="http://camel.apache.org/schema/spring"
 		trace="true" streamCache="true">

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.chewbyte.offpeaky.model.Journey;
 import com.chewbyte.offpeaky.model.TicketType;
-import com.chewbyte.offpeaky.processor.JourneyTime;
+import com.chewbyte.offpeaky.model.JourneyTime;
 
 public class JourneyMapper {
 

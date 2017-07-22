@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
 import com.chewbyte.offpeaky.model.Journey;
+import com.chewbyte.offpeaky.model.JourneyTime;
 
 public class TimesProcessor implements Processor {
 	

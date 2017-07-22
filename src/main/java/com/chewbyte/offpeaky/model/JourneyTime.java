@@ -1,4 +1,4 @@
-package com.chewbyte.offpeaky.processor;
+package com.chewbyte.offpeaky.model;
 
 import com.chewbyte.offpeaky.model.TicketType;
 
