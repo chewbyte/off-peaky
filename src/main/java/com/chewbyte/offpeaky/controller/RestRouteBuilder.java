@@ -3,10 +3,7 @@ package com.chewbyte.offpeaky.controller;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
-
-import com.chewbyte.offpeaky.model.Result;	
+import org.apache.camel.builder.RouteBuilder;	
 
 /**
  * Define REST services using the Camel REST DSL
