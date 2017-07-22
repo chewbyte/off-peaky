@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
+import com.chewbyte.offpeaky.controller.Constants;
 import com.chewbyte.offpeaky.csv.CsvSearch;
 import com.chewbyte.offpeaky.model.Station;
 import com.chewbyte.offpeaky.model.response.StationCodeResponse;
@@ -15,8 +16,6 @@ import com.univocity.parsers.csv.CsvParserSettings;
 
 public class StationCodeProcessor implements Processor{
 	
-	private static String STATION_CODE_FILE = "station_codes.csv";
-
 	public void process(Exchange exchange) throws Exception {
 		
 		String searchterm = exchange.getIn().getHeader("term", String.class);
@@ -34,7 +33,7 @@ public class StationCodeProcessor implements Processor{
 
 		//Do the parse
 		ClassLoader classLoader = getClass().getClassLoader();
-		parser.parse(new File(classLoader.getResource(STATION_CODE_FILE).getFile()));
+		parser.parse(new File(classLoader.getResource(Constants.STATION_CODE_FILE).getFile()));
 
 		//Get collected rows
 		List<String[]> results = search.getRows();

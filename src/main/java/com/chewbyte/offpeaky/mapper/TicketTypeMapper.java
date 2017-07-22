@@ -2,23 +2,25 @@ package com.chewbyte.offpeaky.mapper;
 
 import java.util.List;
 
+import com.chewbyte.offpeaky.controller.StationCodeToName;
 import com.chewbyte.offpeaky.model.JourneyTime;
 import com.chewbyte.offpeaky.model.TicketType;
 
 public class TicketTypeMapper {
 
-	public static String map(List<JourneyTime> journeyTimeList, String ticketType) {
+	public static String map(List<JourneyTime> journeyTimeList, String ticketType, String fromStation) {
 		
 		StringBuffer sb = new StringBuffer();
+		String stationName = (new StationCodeToName()).codeToName(fromStation);
 
 		TicketType type = null;
 		if (ticketType.equals("OP")) {
 			type = TicketType.OFF_PEAK;
-			sb.append("You can travel on any of the following Off-Peak trains:");
+			sb.append("You can travel on any of the following Off-Peak trains departing from ").append(stationName).append(":");
 		}
 		else if (ticketType.equals("SOP")) {
 			type = TicketType.SUPER_OFF_PEAK;
-			sb.append("You can travel on any of the following Super Off-Peak trains:");
+			sb.append("You can travel on any of the following Super Off-Peak trains departing from ").append(stationName).append(":");
 		}
 		if (type == null) return "Invalid ticket type code.";
 

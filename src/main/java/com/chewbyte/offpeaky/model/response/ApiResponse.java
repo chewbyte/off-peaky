@@ -2,12 +2,14 @@ package com.chewbyte.offpeaky.model.response;
 
 import java.util.List;
 
+import com.chewbyte.offpeaky.model.Context;
+
 public class ApiResponse {
 	
 	private String speech;
 	private String displayTest;
 	private String data;
-	private List<String> contextOut;
+	private List<Context> contextOut;
 	private String source;
 	
 	public String getSpeech() {
@@ -34,11 +36,11 @@ public class ApiResponse {
 		this.data = data;
 	}
 	
-	public List<String> getContextOut() {
+	public List<Context> getContextOut() {
 		return contextOut;
 	}
 	
-	public void setContextOut(List<String> contextOut) {
+	public void setContextOut(List<Context> contextOut) {
 		this.contextOut = contextOut;
 	}
 	

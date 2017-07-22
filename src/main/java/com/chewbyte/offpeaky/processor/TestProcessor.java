@@ -31,6 +31,6 @@ public class TestProcessor implements Processor {
 
 		List<JourneyTime> journeyTimeList = JourneyMapper.map(journeyList);
 
-		exchange.getOut().setBody(TicketTypeMapper.map(journeyTimeList, ticketType));
+		exchange.getOut().setBody(TicketTypeMapper.map(journeyTimeList, ticketType, fromStation));
 	}
 }
