@@ -2,22 +2,22 @@ package com.chewbyte.offpeaky.model;
 
 public class Parameters {
 
-	private String startStation;
-	private String endStation;
+	private String fromStation;
+	private String toStation;
 	private String date;
 	private String ticketType;
 	
-	public String getStartStation() {
-		return startStation;
+	public String getFromStation() {
+		return fromStation;
 	}
-	public void setStartStation(String startStation) {
-		this.startStation = startStation;
+	public void setFromStation(String fromStation) {
+		this.fromStation = fromStation;
 	}
-	public String getEndStation() {
-		return endStation;
+	public String getToStation() {
+		return toStation;
 	}
-	public void setEndStation(String endStation) {
-		this.endStation = endStation;
+	public void setToStation(String toStation) {
+		this.toStation = toStation;
 	}
 	public String getDate() {
 		return date;

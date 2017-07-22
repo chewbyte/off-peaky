@@ -22,17 +22,17 @@ public class TimesProcessor implements Processor {
 	
 	public void process(Exchange exchange) throws Exception {
 		
-		String startStation = (String) exchange.getProperty("startStation");
-		String endStation = (String) exchange.getProperty("endStation");
+		String fromStation = (String) exchange.getProperty("fromStation");
+		String toStation = (String) exchange.getProperty("toStation");
 		String date = (String) exchange.getProperty("date");
 		String ticketType = (String) exchange.getProperty("ticketType");
 		
-		if(startStation == null) return;
-		if(endStation == null) return;
+		if(fromStation == null) return;
+		if(toStation == null) return;
 		if(date == null) return;
 		if(ticketType == null) return;
 		
-		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, date);
+		JourneyScraper journeyScraper = new JourneyScraper(fromStation, toStation, date);
 		
 		List<Journey> journeyList = journeyScraper.scrape();
 		
@@ -40,7 +40,7 @@ public class TimesProcessor implements Processor {
 		
 		logger.info("Starting persist...");
 		
-		String code = startStation + endStation + date;
+		String code = fromStation + toStation + date;
 		DBJourney toSave = new DBJourney(code, GsonFactory.json(journeyTimeList));
 		
 		Session session = HibernateFactory.get();

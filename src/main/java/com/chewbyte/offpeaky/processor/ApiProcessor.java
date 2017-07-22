@@ -32,15 +32,15 @@ public class ApiProcessor implements Processor {
 		String string = exchange.getIn().getBody(String.class);
 		ApiRequest request = (ApiRequest) GsonFactory.object(string, ApiRequest.class);
 		
-		String startStation = request.getResult().getParameters().getStartStation();
-		String endStation = request.getResult().getParameters().getEndStation();
+		String fromStation = request.getResult().getParameters().getFromStation();
+		String toStation = request.getResult().getParameters().getToStation();
 		String ticketType = request.getResult().getParameters().getTicketType();
 		
 		DateTime date = new DateTime(request.getResult().getParameters().getDate());
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("ddMMYY");
 		String dateFormatted = fmt.print(date);
 		
-		String code = startStation + endStation + dateFormatted;
+		String code = fromStation + toStation + dateFormatted;
 		Session session = HibernateFactory.get();
 		DBJourney journey = (DBJourney) session.get(DBJourney.class, code);
 		session.close();
@@ -59,8 +59,8 @@ public class ApiProcessor implements Processor {
 			apiResponse.setSpeech(Constants.MESSAGE_WAIT);
 			apiResponse.setDisplayTest(Constants.MESSAGE_WAIT);
 			
-			exchange.setProperty("startStation", startStation);
-			exchange.setProperty("endStation", endStation);
+			exchange.setProperty("fromStation", fromStation);
+			exchange.setProperty("toStation", toStation);
 			exchange.setProperty("date", dateFormatted);
 			exchange.setProperty("ticketType", ticketType);
 		}

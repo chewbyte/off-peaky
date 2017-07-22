@@ -29,9 +29,9 @@ public class JourneyScraper {
 	private String baseUrl;
 	private int threadNumber;
 
-	public JourneyScraper(String startStation, String endStation, String dateTravel) {
-		baseUrl = String.format("http://ojp.nationalrail.co.uk/service/timesandfares/%s/%s/%s/_TIME_/dep", startStation,
-				endStation, dateTravel);
+	public JourneyScraper(String fromStation, String toStation, String dateTravel) {
+		baseUrl = String.format("http://ojp.nationalrail.co.uk/service/timesandfares/%s/%s/%s/_TIME_/dep", fromStation,
+				toStation, dateTravel);
 	}
 
 	public List<Journey> scrape() throws IOException {
