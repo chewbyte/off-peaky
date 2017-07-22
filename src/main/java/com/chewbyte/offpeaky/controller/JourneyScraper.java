@@ -20,7 +20,6 @@ import org.jsoup.select.Elements;
 
 import com.chewbyte.offpeaky.model.Journey;
 import com.chewbyte.offpeaky.repository.GsonFactory;
-import com.google.gson.Gson;
 
 public class JourneyScraper {
 

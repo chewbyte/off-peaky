@@ -7,12 +7,15 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
 import com.chewbyte.offpeaky.model.Journey;
 import com.chewbyte.offpeaky.model.JourneyTime;
 import com.chewbyte.offpeaky.repository.GsonFactory;
+import com.chewbyte.offpeaky.repository.HibernateFactory;
+import com.chewbyte.offpeaky.repository.model.DBJourney;
 import com.google.gson.Gson;
 
 public class TimesProcessor implements Processor {
@@ -43,6 +46,9 @@ public class TimesProcessor implements Processor {
 		
 		List<JourneyTime> journeyTimeList = JourneyMapper.map(journeyList);
 		
-		exchange.getOut().setBody(GsonFactory.json(journeyTimeList));
+		String code = toStation + fromStation + date;
+		Session session = HibernateFactory.get();
+		session.save(new DBJourney(code, GsonFactory.json(journeyTimeList)));
+		session.close();
 	}
 }

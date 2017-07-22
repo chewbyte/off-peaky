@@ -48,7 +48,7 @@ public class RestRouteBuilder extends RouteBuilder {
 		from("direct:getTimes")
 			.choice()
 				.when(header("ticketType").isNotNull())
-					.process("timesProcessor");
+					.process("testProcessor");
 	}
 
 }

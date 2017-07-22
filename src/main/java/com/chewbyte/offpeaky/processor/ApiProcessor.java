@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.chewbyte.offpeaky.controller.Constants;
 import com.chewbyte.offpeaky.model.Result;
 import com.chewbyte.offpeaky.model.request.ApiRequest;
 import com.chewbyte.offpeaky.model.response.ApiResponse;
@@ -44,22 +45,23 @@ public class ApiProcessor implements Processor {
 		DBJourney journey = (DBJourney) session.get(DBJourney.class, code);
 		session.close();
 		
+		ApiResponse apiResponse = new ApiResponse();
+		apiResponse.setData("");
+		apiResponse.setContextOut(new ArrayList<String>());
+		apiResponse.setSource("chewbyte.com");
+		
 		if(journey != null) {
-			exchange.getOut().setBody(journey.getJson());
+			apiResponse.setSpeech(journey.getJson());
+			apiResponse.setDisplayTest(journey.getJson());
 		} else {
-			ApiResponse apiResponse = new ApiResponse();
-			apiResponse.setSpeech("");
-			apiResponse.setDisplayTest("");
-			apiResponse.setData("");
-			apiResponse.setContextOut(new ArrayList<String>());
-			apiResponse.setSource("chewbyte.com");
+			apiResponse.setSpeech(Constants.MESSAGE_WAIT);
+			apiResponse.setDisplayTest(Constants.MESSAGE_WAIT);
 			
 			exchange.setProperty("toStation", toStation);
 			exchange.setProperty("fromStation", fromStation);
 			exchange.setProperty("date", dateFormatted);
 			exchange.setProperty("ticketType", ticketType);
-			
-			exchange.getOut().setBody(GsonFactory.json(apiResponse));
 		}
+		exchange.getOut().setBody(GsonFactory.json(apiResponse));
 	}
 }
