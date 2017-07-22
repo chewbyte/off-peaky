@@ -38,7 +38,6 @@ public class JourneyScraper {
 
 		long timeStart = System.currentTimeMillis();
 
-		ExecutorService executorService = Executors.newFixedThreadPool(20);
 		List<Future<Map<String, Journey>>> handles = new ArrayList<Future<Map<String, Journey>>>();
 		Future<Map<String, Journey>> handle;
 		int i;

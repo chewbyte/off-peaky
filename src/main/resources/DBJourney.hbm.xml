@@ -8,9 +8,7 @@
       <meta attribute="class-description">
          This class contains the DBJourney detail.
       </meta>
-      <id name="code" type="string" column="code">
-         <generator class="native"/>
-      </id>
+      <id name="code" type="string" column="code"></id>
       <property name="json" column="json" type="string"/>
    </class>
 </hibernate-mapping>

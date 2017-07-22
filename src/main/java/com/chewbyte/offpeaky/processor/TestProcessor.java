@@ -20,12 +20,12 @@ public class TestProcessor implements Processor {
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers = exchange.getIn().getHeaders();
 
-		String toStation = (String) headers.get("start");
-		String fromStation = (String) headers.get("end");
+		String startStation = (String) headers.get("start");
+		String endStation = (String) headers.get("end");
 		String date = (String) headers.get("date");
 		String ticketType = (String) headers.get("ticketType");
 
-		JourneyScraper journeyScraper = new JourneyScraper(toStation, fromStation, date);
+		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, date);
 
 		List<Journey> journeyList = journeyScraper.scrape();
 

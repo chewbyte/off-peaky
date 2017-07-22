@@ -1,12 +1,12 @@
 package com.chewbyte.offpeaky.processor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import com.chewbyte.offpeaky.controller.JourneyScraper;
 import com.chewbyte.offpeaky.mapper.JourneyMapper;
@@ -18,35 +18,41 @@ import com.chewbyte.offpeaky.repository.model.DBJourney;
 
 public class TimesProcessor implements Processor {
 	
+	Logger logger = Logger.getLogger(TimesProcessor.class);
+	
 	public void process(Exchange exchange) throws Exception {
 		
-		String toStation = (String) exchange.getProperty("toStation");
-		String fromStation = (String) exchange.getProperty("fromStation");
+		String startStation = (String) exchange.getProperty("startStation");
+		String endStation = (String) exchange.getProperty("endStation");
 		String date = (String) exchange.getProperty("date");
 		String ticketType = (String) exchange.getProperty("ticketType");
 		
-		if(toStation.isEmpty()) return;
-		if(fromStation.isEmpty()) return;
+		if(startStation.isEmpty()) return;
+		if(endStation.isEmpty()) return;
 		if(date.isEmpty()) return;
 		if(ticketType.isEmpty()) return;
 		
-		Map<String, Object> headers = new HashMap<String, Object>();
-		headers = exchange.getIn().getHeaders();
-		
-		toStation = headers.get("start") != null ? (String) headers.get("start") : toStation;
-		fromStation = headers.get("end") != null ? (String) headers.get("end") : fromStation;
-		date = headers.get("date") != null ? (String) headers.get("date") : date;
-		ticketType = headers.get("ticketType") != null ? (String) headers.get("ticketType") : ticketType;
-		
-		JourneyScraper journeyScraper = new JourneyScraper(toStation, fromStation, date);
+		JourneyScraper journeyScraper = new JourneyScraper(startStation, endStation, date);
 		
 		List<Journey> journeyList = journeyScraper.scrape();
 		
 		List<JourneyTime> journeyTimeList = JourneyMapper.map(journeyList);
 		
-		String code = toStation + fromStation + date;
+		logger.info("Starting persist...");
+		
+		String code = startStation + endStation + date;
+		DBJourney toSave = new DBJourney(code, GsonFactory.json(journeyTimeList));
+		
 		Session session = HibernateFactory.get();
-		session.save(new DBJourney(code, GsonFactory.json(journeyTimeList)));
-		session.close();
+		Transaction tx = null;
+		try {
+		    tx = session.beginTransaction();
+		    session.saveOrUpdate(toSave);
+		    tx.commit();
+		} catch(Exception e) {
+		    tx.rollback();
+		}
+		
+		logger.info("Finished persist.");
 	}
 }
